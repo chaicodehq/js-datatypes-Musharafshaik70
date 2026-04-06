@@ -45,4 +45,69 @@
  */
 export function iplAuctionSummary(team, players) {
   // Your code here
+  if (
+    typeof team !== "object" ||
+    team === null ||
+    Array.isArray(team) ||
+    team.purse <= 0
+  )
+    return null;
+  if (!Array.isArray(players) || players.length === 0) return null;
+  if (!("purse" in team)) return null;
+  const totalSpent = players.reduce((acc, player) => acc + player.price, 0);
+  const remaining = team.purse - totalSpent;
+  const playerCount = players.length;
+  const playersArray = players.map((player) => player.price);
+  const maxPrice = Math.max(...playersArray);
+  const minPrice = Math.min(...playersArray);
+  const costliestPlayer = players.find((player) => player.price === maxPrice);
+  const cheapestPlayer = players.find((player) => player.price === minPrice);
+  const averagePrice = Math.round(totalSpent / playerCount);
+  const byRole = players.reduce((acc, player) => {
+    acc[player.role] = (acc[player.role] || 0) + 1;
+    return acc;
+  }, {});
+  const isOverBudget = totalSpent > team.purse;
+  return {
+    teamName: team.name,
+    totalSpent,
+    remaining,
+    playerCount,
+    costliestPlayer,
+    cheapestPlayer,
+    averagePrice,
+    byRole,
+    isOverBudget,
+  };
 }
+
+//find() vs filter()
+//find :
+// 1) use when you want to find single element
+// 2) returns single element
+// 3) stops immedietely when the element is found even at index 0
+// 4) returns undefined if no match is found
+//filer :
+// 1) use when you want to filter out or group elements based on some criteria.
+// 2) returns an array of element.
+// 3) loops every element of array even if one element satisfies the criteria at index 0.
+// 4) returns empty array [] when element matches the criteria.
+
+//try to understand the code suing gemini
+/* const byRole = players.reduce(
+    (acc, player) => {
+      if (acc.hasOwnProperty(player.role)) acc[role]++;
+      return acc;
+    },
+    { bat: 0, bowl: 0, ar: 0, wk: 0 },
+  );
+
+ vs
+
+ const byRole = players.reduce((acc, player) => {
+    acc[player.role] = (acc[player.role] || 0) + 1;
+    return acc;
+  }, {});
+
+*/
+//you cannot do array[-1] but you can do array[array.length-1];

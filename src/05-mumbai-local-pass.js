@@ -43,4 +43,44 @@
  */
 export function generateLocalPass(passenger) {
   // Your code here
+  if (
+    typeof passenger !== "object" ||
+    passenger === null ||
+    Array.isArray(passenger)
+  )
+    return "INVALID PASS";
+
+  if (
+    typeof passenger.name !== "string" ||
+    typeof passenger.from !== "string" ||
+    typeof passenger.to !== "string" ||
+    typeof passenger.classType !== "string"
+  )
+    return "INVALID PASS";
+
+  if (passenger.name.length === 0) return "INVALID PASS";
+
+  // or;
+  // if (
+  //   !("name" in passenger) ||
+  //   !("from" in passenger) ||
+  //   !("to" in passenger) ||
+  //   !("classType" in passenger)
+  // )
+  //   return "INVALID PASS";
+  if (
+    passenger.classType.toLowerCase() !== "first" &&
+    passenger.classType.toLowerCase() !== "second"
+  )
+    return "INVALID PASS";
+
+  const passId =
+    passenger.classType.charAt(0).toUpperCase() +
+    passenger.from.slice(0, 3).toUpperCase() +
+    passenger.to.slice(0, 3).toUpperCase();
+
+  return `MUMBAI LOCAL PASS\n---\nName: ${passenger.name.toUpperCase()}\nFrom: ${passenger.from.charAt(0).toUpperCase() + passenger.from.slice(1).toLowerCase()}\nTo: ${passenger.to.charAt(0).toUpperCase() + passenger.to.slice(1).toLowerCase()}\nClass: ${passenger.classType.toUpperCase()}\nPass ID: ${passId}`;
 }
+
+//forgot to use passenger. before classType , from , to , name which resulted in a lot of errors.
+//I placed 3rd if condition before 2nd if condition which also created an error : because if the passenger.name is misssig , it will throw error in this condition.

@@ -29,4 +29,16 @@
  */
 export function maskAadhaar(aadhaarNumber) {
   // Your code here
+  if (
+    typeof aadhaarNumber !== "string" ||
+    aadhaarNumber.length !== 12 ||
+    !/^\d+$/.test(aadhaarNumber)
+  )
+    return "INVALID";
+  const LastDigits = aadhaarNumber.slice(-4);
+  return `XXXX-XXXX-${LastDigits}`;
 }
+
+// this checks whether all chars in a string are digits or not  : /^\d+$/.test(aadhaarNumber);
+//slice(4) - slices all characters after index 4;
+//slice(-4) - slices last 4 chars;

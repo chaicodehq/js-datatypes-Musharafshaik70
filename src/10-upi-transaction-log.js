@@ -47,5 +47,64 @@
  *   //      frequentContact: "Swiggy", allAbove100: false, hasLargeTransaction: true }
  */
 export function analyzeUPITransactions(transactions) {
-  // Your code here
+  //code here
+  if (!Array.isArray(transactions) || transactions.length === 0) return null;
+
+  const validTransactions = transactions.filter(
+    (t) => t.amount > 0 && (t.type === "credit" || t.type === "debit"),
+  );
+  if (validTransactions.length === 0) return null;
+
+  const totalCredit = validTransactions
+    .filter((t) => t.type === "credit")
+    .reduce((sum, t) => sum + t.amount, 0);
+  const totalDebit = validTransactions
+    .filter((t) => t.type === "debit")
+    .reduce((sum, t) => sum + t.amount, 0);
+  const netBalance = totalCredit - totalDebit;
+  const transactionCount = validTransactions.length;
+  const avgTransaction = Math.round(
+    (totalCredit + totalDebit) / transactionCount,
+  );
+  const highestTransaction = validTransactions.reduce((prev, curr) =>
+    prev.amount > curr.amount ? prev : curr,
+  );
+  const categoryBreakdown = validTransactions.reduce((acc, t) => {
+    acc[t.category] = (acc[t.category] || 0) + t.amount;
+    return acc;
+  }, {});
+  const toCount = validTransactions.reduce((acc, t) => {
+    acc[t.to] = (acc[t.to] || 0) + 1;
+    return acc;
+  }, {});
+  const frequentContact = Object.entries(toCount).reduce((prev, curr) =>
+    Number(prev[1]) > Number(curr[1]) ? prev : curr,
+  )[0];
+  const allAbove100 = validTransactions.every((t) => t.amount > 100);
+  const hasLargeTransaction = validTransactions.some((t) => t.amount >= 5000);
+
+  return {
+    totalCredit,
+    totalDebit,
+    netBalance,
+    transactionCount,
+    avgTransaction,
+    highestTransaction,
+    categoryBreakdown,
+    frequentContact,
+    allAbove100,
+    hasLargeTransaction,
+  };
 }
+
+// const maxContact = Math.max(...Object.values(frequentContactCheck));
+// const frequentContact = filteredTransaction.find((transaction) => frequentContactCheck[transaction.to] === maxContact,).to;
+
+//vs
+
+// const frequentContact = Object.entries(toCount).reduce((prev, curr) =>Number(prev[1]) > Number(curr[1]) ? prev : curr,)[0];
+
+//analyze :
+//const highestTransaction = validTransactions.reduce((prev, curr) => prev.amount > curr.amount ? prev : curr,);
+
+//you are forgetting to return inside reduce , take care of it.
